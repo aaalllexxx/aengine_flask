@@ -1,7 +1,7 @@
 import json
 
 
-class JsonDB:
+class JsonDict:
     def __init__(self, path):
         self.path = path
         self.dictionary = self.load()
@@ -44,3 +44,7 @@ class JsonDB:
         dictionary = self.load()
         del dictionary[key]
         self.push(dictionary)
+
+    def __repr__(self):
+        self.dictionary = self.load()
+        return json.dumps(self.dictionary, indent=2)
