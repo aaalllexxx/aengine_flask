@@ -1,12 +1,14 @@
 from flask import Flask
 
-from routers import Router
-from typing import Callable
+from aengine_flask.routers import Router
+from aengine_flask.json_dict import JsonDict
+from importlib import import_module
 
 
 class App:
     __routers = {}
     app = Flask(__name__)
+    config: JsonDict
 
     def add_router(self, router: Router):
         if isinstance(router.rules, str):
@@ -24,6 +26,20 @@ class App:
             router = v.to_dict()
             del router["rules"]
             self.app.add_url_rule(k, k, **router)
+
+    def load_config(self, path):
+        self.config = JsonDict(path)
+        if self.config.get('screenImportPath'):
+            import_path = self.config['screenImportPath'] + "."
+        else:
+            import_path = ""
+        if self.config.get("routes"):
+            if isinstance(self.config.routes, dict):
+                for k, v in self.config.routes.items():
+                    self.add_router(Router(k, import_module(f"{import_path}{v}").__getattribute__(v)()))
+
+    def set_root_folder(self, path):
+        self.app.root_path = path
 
     def run(self, *args, **kwargs):
         args = list(args)

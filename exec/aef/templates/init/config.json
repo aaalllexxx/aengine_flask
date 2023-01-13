@@ -1,0 +1,7 @@
+{
+  "screenImportPath": "screens",
+  "routes": {
+    "/": "HomeScreen",
+    "/index": "HomeScreen"
+  }
+}

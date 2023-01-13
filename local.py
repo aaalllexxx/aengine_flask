@@ -1,3 +1,6 @@
-from environment import Environment
+import os
 
-settings = Environment("settings.aenv")
+from aengine_flask.json_dict import JsonDict
+
+base_dir = os.path.dirname(os.path.realpath(__file__))
+settings = JsonDict(base_dir + "/settings.json")

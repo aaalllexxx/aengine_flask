@@ -36,7 +36,7 @@ class JsonDict:
         return dictionary
 
     def push(self, data: dict) -> None:
-        data = json.dumps(data)
+        data = json.dumps(data, indent=2)
         with open(self.path, "w") as file:
             file.write(data)
 
@@ -44,6 +44,9 @@ class JsonDict:
         dictionary = self.load()
         del dictionary[key]
         self.push(dictionary)
+
+    def get(self, key):
+        return self.dictionary.get(key)
 
     def __repr__(self):
         self.dictionary = self.load()
