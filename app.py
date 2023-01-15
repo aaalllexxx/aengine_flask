@@ -1,14 +1,18 @@
+from importlib import import_module
+
 from flask import Flask
 
-from aengine_flask.routers import Router
 from aengine_flask.json_dict import JsonDict
-from importlib import import_module
+from aengine_flask.routers import Router
 
 
 class App:
     __routers = {}
     app = Flask(__name__)
     config: JsonDict
+    port = 5000
+    ip = "127.0.0.1"
+    debug = 0
 
     def add_router(self, router: Router):
         if isinstance(router.rules, str):
@@ -37,17 +41,24 @@ class App:
             if isinstance(self.config.routes, dict):
                 for k, v in self.config.routes.items():
                     self.add_router(Router(k, import_module(f"{import_path}{v}").__getattribute__(v)()))
+        if self.config.get("ip"):
+            self.ip = self.config.ip
+        if self.config.get("port"):
+            self.port = self.config.port
+        if self.config.get("debug"):
+            self.debug = self.config.debug
 
     def set_root_folder(self, path):
         self.app.root_path = path
 
     def run(self, *args, **kwargs):
         args = list(args)
-        ip = args[0] if len(args) > 0 else kwargs["ip"] if kwargs.get("ip") else "127.0.0.1"
+        ip = args[0] if len(args) > 0 else kwargs["ip"] if kwargs.get("ip") else self.ip
         if kwargs.get("ip"):
             del kwargs["ip"]
-        port = args[1] if len(args) > 1 else kwargs["port"] if kwargs.get("port") else 5000
+        port = args[1] if len(args) > 1 else kwargs["port"] if kwargs.get("port") else self.port
         if kwargs.get("port"):
             del kwargs["port"]
         self.init()
+        kwargs["debug"] = self.debug
         self.app.run(ip, port, **kwargs)
