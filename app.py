@@ -40,7 +40,12 @@ class App:
         if self.config.get("routes"):
             if isinstance(self.config.routes, dict):
                 for k, v in self.config.routes.items():
-                    self.add_router(Router(k, import_module(f"{import_path}{v}").__getattribute__(v)()))
+                    screen = import_module(f"{import_path}{v}").__getattribute__(v)()
+                    if hasattr(screen, "options"):
+                        options = screen.options
+                    else:
+                        options = {}
+                    self.add_router(Router(k, screen, **options))
         if self.config.get("ip"):
             self.ip = self.config.ip
         if self.config.get("port"):
