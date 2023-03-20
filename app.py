@@ -4,15 +4,20 @@ from flask import Flask
 
 from aengine_flask.json_dict import JsonDict
 from aengine_flask.routers import Router
+from aengine_flask.global_storage import GlobalStorage
 
 
 class App:
     __routers = {}
-    app = Flask(__name__)
+    app: Flask = Flask(__name__)
     config: JsonDict
     port = 5000
     ip = "127.0.0.1"
     debug = 0
+    storage = GlobalStorage()
+
+    def __init__(self):
+        self.storage.app = self.app
 
     def add_router(self, router: Router):
         if isinstance(router.rules, str):
