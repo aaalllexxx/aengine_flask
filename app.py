@@ -16,11 +16,8 @@ class App:
     debug = 0
     storage = GlobalStorage()
 
-    def __init__(self):
-        self.storage.app = self.app
-
     def init(self):
-        self.__init__()
+        self.storage.app = self.app
 
     def add_router(self, router: Router):
         if isinstance(router.rules, str):
