@@ -19,6 +19,9 @@ class App:
     def __init__(self):
         self.storage.app = self.app
 
+    def init(self):
+        self.__init__()
+
     def add_router(self, router: Router):
         if isinstance(router.rules, str):
             self.__routers[router.rules] = router
